@@ -3,6 +3,7 @@ package cub.book.controller;
 import java.time.LocalDateTime;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -13,22 +14,32 @@ import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import cub.book.dto.BookQueryRq;
+import cub.book.dto.BookQueryRs;
 import cub.book.dto.base.CubResponse;
-import cub.book.enums.ReturnCodeEnum;
+import cub.book.service.BookService;
 
 @RequestScoped
 @Path("")
 public class BookController {
+	
+	private BookService bookService;
+	
+	@Inject
+	public BookController(BookService bookService) {
+		this.bookService = bookService;
+	}
 
 	@Operation(summary = "書籍查詢")
 	@POST
 	@Path("/book/query")
-	public RestResponse<CubResponse<BookQueryRq>> query(@Valid BookQueryRq cubRq){
+	public RestResponse<CubResponse<BookQueryRs>> bookQuery(@Valid BookQueryRq bookQueryRq){
+		
+		CubResponse<BookQueryRs> cubRs = bookService.bookQuery(bookQueryRq);
 		
 		LocalDateTime currentTime = LocalDateTime.now();
      
-        CubResponse<BookQueryRq> cubRs = new CubResponse<BookQueryRq>();
-        cubRs.setReturnCodeAndDesc(ReturnCodeEnum.SUCCESS);
+        //CubResponse<BookQueryRs> cubRs = new CubResponse<BookQueryRs>();
+        //cubRs.setReturnCodeAndDesc(ReturnCodeEnum.SUCCESS);
         
         return ResponseBuilder.ok(cubRs, MediaType.APPLICATION_JSON).header("date",currentTime).build();
         				
