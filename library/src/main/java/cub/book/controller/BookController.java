@@ -15,6 +15,7 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
 import cub.book.dto.BookQueryRq;
 import cub.book.dto.BookQueryRs;
+import cub.book.dto.BookUpdateRq;
 import cub.book.dto.base.CubResponse;
 import cub.book.service.BookService;
 
@@ -43,6 +44,15 @@ public class BookController {
         
         return ResponseBuilder.ok(cubRs, MediaType.APPLICATION_JSON).header("date",currentTime).build();
         				
+	}
+	
+	@Operation(summary = "書籍修改")
+	@POST
+	@Path("/book/modify")
+	public RestResponse<CubResponse<BookUpdateRq>> bookUpdate(@Valid BookUpdateRq bookUpdateRq){
+		CubResponse<BookUpdateRq> cubRs = bookService.bookUpdate(bookUpdateRq);
+		LocalDateTime currentTime = LocalDateTime.now();
+		return ResponseBuilder.ok(cubRs, MediaType.APPLICATION_JSON).header("date",currentTime).build();
 	}
 }
 
